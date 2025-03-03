@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -10,13 +11,16 @@ public class PlayerManager : MonoBehaviour
     bool wasOnTileLastFrame = false;
     public GameObject[] helperPieces;
     public int pieceID = 0;
-    int maxPieces = 5;
+    public int maxPieces = 11;
     bool wasChangedThisFrame = false;
     public GameObject helper;
+    public TMP_Text scoreText;
+    public int score = 0;
 
     private void Start()
     {
         helper.transform.localScale = Vector3.one * FindFirstObjectByType<GridManager>().tileSize;
+        UpdateScore(0);
     }
 
     // Update is called once per frame
@@ -64,6 +68,11 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetMouseButtonUp(0)) {
             MouseClick();
         }
+    }
+
+    public void UpdateScore(int by) {
+        score += by;
+        scoreText.text = "Score: " + score;
     }
 
     void OnMouseMove() {
