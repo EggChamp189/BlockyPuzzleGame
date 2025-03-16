@@ -87,9 +87,10 @@ public class GridManager : MonoBehaviour
     public void PlacePiece(int id, Vector2Int position)
     {
         // make sure that the spots are open to change first
-        if (!CheckID(id, position))
+        if (!CheckID(id, position) && id != 0)
             return;
         PlaceTiles(id, position);
+        FindFirstObjectByType<MenuScript>().PiecePlaced();
         CheckGridLines();
     }
 
@@ -119,8 +120,8 @@ public class GridManager : MonoBehaviour
             10 => new Vector2Int[4] { Vector2Int.zero, Vector2Int.right, Vector2Int.up, Vector2Int.one},
             // 3x3 piece
             11 => new Vector2Int[9] { Vector2Int.zero, Vector2Int.right, Vector2Int.right * 2, Vector2Int.up, Vector2Int.up * 2, Vector2Int.one, Vector2Int.one + Vector2Int.right, Vector2Int.one + Vector2Int.up, Vector2Int.one * 2},
-            // only check the tile clicked, 1x1 - 0
-            _ => new Vector2Int[1] { Vector2Int.zero }
+            // no valid piece
+            _ => new Vector2Int[0] { }
         };
         return data;
     }

@@ -32,23 +32,6 @@ public class PlayerManager : MonoBehaviour
             OnMouseMove();
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (pieceID <= 1)
-                pieceID = maxPieces;
-            else
-                pieceID--;
-            wasChangedThisFrame = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.E)) {
-            if (pieceID >= maxPieces)
-                pieceID = 0;
-            else
-                pieceID++;
-            wasChangedThisFrame = true;
-        }
-
         if (wasChangedThisFrame) {
             Destroy(helper);
             helper = Instantiate(helperPieces[pieceID]);
@@ -68,6 +51,13 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetMouseButtonUp(0)) {
             MouseClick();
         }
+    }
+
+    public void UpdateHelper(int id) {
+        pieceID = id;
+        Destroy(helper);
+        helper = Instantiate(helperPieces[pieceID]);
+        helper.transform.localScale = Vector3.one * FindFirstObjectByType<GridManager>().tileSize;
     }
 
     public void UpdateScore(int by) {
