@@ -1,20 +1,26 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class MenuScript : MonoBehaviour
 {
     PlayerManager player;
     static int maxPieces = 1;
     public int[] myIDs = new int[3];
+    public TMP_Text[] displays = new TMP_Text[3];
+    public GameObject[] displayImages = new GameObject[3];
     public int playerUsing = 0; // tracks the id that the player has currently selected
-    GameObject lastClicked;
 
     private void Awake()
     {
         player = FindFirstObjectByType<PlayerManager>();
         maxPieces = player.maxPieces;
-        myIDs[0] = RandomID();
-        myIDs[1] = RandomID();
-        myIDs[2] = RandomID();
+        for (int i = 0; i < 3; i++)
+        {
+            myIDs[i] = RandomID();
+        }
+        UpdateDisplay();
     }
 
     private void Update()
@@ -28,7 +34,7 @@ public class MenuScript : MonoBehaviour
             else
                 num = 2;
             GetButtonNumber(num);
-            playerUsing = num;
+            playerUsing = num + 1;
         }
     }
 
@@ -38,8 +44,24 @@ public class MenuScript : MonoBehaviour
 
     public void PiecePlaced()
     {
-        GetButtonNumber(0);
-        myIDs[playerUsing] = RandomID();
+        player.UpdateHelper(0);
+        myIDs[playerUsing - 1] = RandomID();
+        playerUsing = 0;
+        UpdateDisplay();
+    }
+
+    public void UpdateDisplay() {
+        for (int i = 0; i < 3; i++)
+        {
+            displays[i].text = player.helperPieces[myIDs[i]].name;
+            // change the image's color depending on if the piece can be placed or not.
+            if (FindFirstObjectByType<GridManager>().CheckBoard(myIDs[i]))
+                displayImages[i].GetComponent<RawImage>().color = Color.white;
+            else
+                displayImages[i].GetComponent<RawImage>().color = Color.gray;
+
+        }
+
     }
 
     // not a placement, but the player is selecting a piece

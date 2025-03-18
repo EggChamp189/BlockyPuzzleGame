@@ -126,6 +126,19 @@ public class GridManager : MonoBehaviour
         return data;
     }
 
+    // checks entire board to see if a piece can be placed. if it can anywhere on the board, then return true.
+    public bool CheckBoard(int id) {
+        bool canBePlaced = false;
+        foreach (GridTile tile in tileGrid) {
+            if (CheckID(id, tile.myPos))
+            {
+                canBePlaced = true;
+                break;
+            }
+        }
+        return canBePlaced;
+    }
+
     // basically stores all the piece data since this should send the array of where to check to CheckMultiple()
     private bool CheckID(int id, Vector2Int position)
     {
