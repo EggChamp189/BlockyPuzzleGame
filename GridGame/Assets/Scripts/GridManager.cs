@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
+    public PlayerManager player;
+    public MenuScript menu;
     public GridTile tilePrefab;
     public int numRows = 3;
     public int numColumns = 3;
@@ -80,7 +82,7 @@ public class GridManager : MonoBehaviour
                 ClearTile(tileGrid[col, row], clearedColor);
             }
         }
-        FindFirstObjectByType<PlayerManager>().UpdateScore( (int)Mathf.Pow( 2, clearedAtOnce) * 10);
+        player.UpdateScore( (int)Mathf.Pow( 2, clearedAtOnce) * 10);
     }
 
     // ~~~~~PIECE PLACING FUNCTIONS~~~~~
@@ -90,8 +92,8 @@ public class GridManager : MonoBehaviour
         if (!CheckID(id, position) && id != 0)
             return;
         PlaceTiles(id, position);
-        FindFirstObjectByType<MenuScript>().PiecePlaced();
         CheckGridLines();
+        menu.PiecePlaced();
     }
 
     // gives the data of each piece

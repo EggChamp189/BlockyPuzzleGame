@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 
 public class PlayerManager : MonoBehaviour
 {
+    public GridManager gridData;
     GridTile hoveringTile = null;
     Color defaultColor = new(25, 38, 55, 1);
     bool wasOnTileLastFrame = false;
@@ -16,10 +17,10 @@ public class PlayerManager : MonoBehaviour
     public GameObject helper;
     public TMP_Text scoreText;
     public int score = 0;
-
+    public bool isDead = false;
     private void Start()
     {
-        helper.transform.localScale = Vector3.one * FindFirstObjectByType<GridManager>().tileSize;
+        helper.transform.localScale = Vector3.one * gridData.tileSize;
         UpdateScore(0);
     }
 
@@ -28,17 +29,17 @@ public class PlayerManager : MonoBehaviour
     {
         wasChangedThisFrame = false;
         // check if the mouse has moved
-        if (Input.mousePositionDelta.magnitude != 0) {
+        if (Input.mousePositionDelta.magnitude != 0 && !isDead) {
             OnMouseMove();
         }
 
-        if (wasChangedThisFrame) {
+        if (wasChangedThisFrame && !isDead) {
             Destroy(helper);
             helper = Instantiate(helperPieces[pieceID]);
-            helper.transform.localScale = Vector3.one * FindFirstObjectByType<GridManager>().tileSize;
+            helper.transform.localScale = Vector3.one * gridData.tileSize;
         }
 
-        if (!wasOnTileLastFrame)
+        if (!wasOnTileLastFrame && !isDead)
         {
             helper.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + Vector3.forward * 10;
         }
@@ -48,7 +49,7 @@ public class PlayerManager : MonoBehaviour
         }
 
 
-        if (Input.GetMouseButtonUp(0)) {
+        if (Input.GetMouseButtonUp(0) && !isDead) {
             MouseClick();
         }
     }
@@ -57,7 +58,7 @@ public class PlayerManager : MonoBehaviour
         pieceID = id;
         Destroy(helper);
         helper = Instantiate(helperPieces[pieceID]);
-        helper.transform.localScale = Vector3.one * FindFirstObjectByType<GridManager>().tileSize;
+        helper.transform.localScale = Vector3.one * gridData.tileSize;
     }
 
     public void UpdateScore(int by) {
@@ -92,7 +93,7 @@ public class PlayerManager : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (hit.collider != null)
         {
-            if (hit.collider.CompareTag("Tile"))
+            if (hit.collider.CompareTag("Tile") && hit.collider.GetComponent<GridTile>() != null && pieceID != 0)
             {
                 // mouse moved to a new tile
                 if (hoveringTile != hit.collider.GetComponent<GridTile>())
@@ -100,7 +101,7 @@ public class PlayerManager : MonoBehaviour
                     hoveringTile = hit.collider.GetComponent<GridTile>();
                     wasOnTileLastFrame = true;
                 }
-                FindFirstObjectByType<GridManager>().PlacePiece(pieceID, hit.collider.GetComponent<GridTile>().myPos);
+                gridData.PlacePiece(pieceID, hit.collider.GetComponent<GridTile>().myPos);
             }
         }
         else if (wasOnTileLastFrame)
