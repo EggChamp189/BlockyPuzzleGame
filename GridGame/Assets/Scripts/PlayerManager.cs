@@ -16,7 +16,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject helper;
     public TMP_Text scoreText;
     public int score = 0;
-
+    public bool isDead = false;
     private void Start()
     {
         helper.transform.localScale = Vector3.one * FindFirstObjectByType<GridManager>().tileSize;
@@ -28,17 +28,17 @@ public class PlayerManager : MonoBehaviour
     {
         wasChangedThisFrame = false;
         // check if the mouse has moved
-        if (Input.mousePositionDelta.magnitude != 0) {
+        if (Input.mousePositionDelta.magnitude != 0 && !isDead) {
             OnMouseMove();
         }
 
-        if (wasChangedThisFrame) {
+        if (wasChangedThisFrame && !isDead) {
             Destroy(helper);
             helper = Instantiate(helperPieces[pieceID]);
             helper.transform.localScale = Vector3.one * FindFirstObjectByType<GridManager>().tileSize;
         }
 
-        if (!wasOnTileLastFrame)
+        if (!wasOnTileLastFrame && !isDead)
         {
             helper.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + Vector3.forward * 10;
         }
@@ -48,7 +48,7 @@ public class PlayerManager : MonoBehaviour
         }
 
 
-        if (Input.GetMouseButtonUp(0)) {
+        if (Input.GetMouseButtonUp(0) && !isDead) {
             MouseClick();
         }
     }

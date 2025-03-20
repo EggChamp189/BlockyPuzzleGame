@@ -90,8 +90,8 @@ public class GridManager : MonoBehaviour
         if (!CheckID(id, position) && id != 0)
             return;
         PlaceTiles(id, position);
-        FindFirstObjectByType<MenuScript>().PiecePlaced();
         CheckGridLines();
+        FindFirstObjectByType<MenuScript>().PiecePlaced();
     }
 
     // gives the data of each piece
